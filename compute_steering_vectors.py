@@ -18,7 +18,7 @@ parser.add_argument('--model', type=str, choices=['sd14', 'sd21', 'sd21-turbo', 
 parser.add_argument('--mode', type=str, choices=['concrete', 'human-related', 'style'], default="style")
 parser.add_argument('--num_denoising_steps', type=int, default=50) # 50 for sd14, sd21, 1 for turbo, 30 for sdxl
 parser.add_argument('--concept_pos', type=str, default="anime")
-parser.add_argument('--concept_neg', type=str, default="classic image")
+parser.add_argument('--concept_neg', type=str, default="classic")
 parser.add_argument('--save_dir', type=str, default='steering_vectors') # path to saving steering vectors
 args = parser.parse_args()
 
