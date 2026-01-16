@@ -25,7 +25,7 @@ def get_prompts_concrete(num=50, concept_pos='Snoopy', concept_neg=None):
             
     return prompts_pos, prompts_neg
 
-def get_prompts_style(num=50, concept_pos='anime', concept_neg=None):
+def get_prompts_style(num=50, concept_pos='anime', concept_neg='classic'):
     
     imagenet_classes = get_imagenet_classes(num)
     
