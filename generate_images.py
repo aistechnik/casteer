@@ -119,5 +119,5 @@ else:
 
         image = run_model(args.model, pipe, args.prompt, args.seed, args.num_denoising_steps)
 
-        image.save(os.path.join(args.save_dir, "{}_{}.png".format(args.image_name, alphai)
+        image.save(os.path.join(args.save_dir, "{}_{}.png".format(args.image_name, alphai)))
 
