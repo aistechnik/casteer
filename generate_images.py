@@ -23,7 +23,7 @@ parser.add_argument('--not_steer', action='store_true')
 parser.add_argument('--steer_only_up', action='store_true')
 parser.add_argument('--num_denoising_steps', type=int, default=50) # 50 for sd14, sd21, 1 for turbo, 30 for sdxl
 parser.add_argument('--steer_back', action='store_true')
-parser.add_argument('--alpha', type=int, default=10)
+parser.add_argument('--alpha', type=str, default="10")
 parser.add_argument('--beta', type=int, default=2)
 parser.add_argument('--save_dir', type=str, default='images') # path to saving generated images
 args = parser.parse_args()
@@ -102,16 +102,22 @@ else:
 
     controller = VectorStore(steering_vectors, device=device)
     controller.steer_only_up = True if args.steer_only_up else False
-    if args.steer_back:
-        controller.steer_back = True
-        controller.beta = args.beta
-    else:
-        controller.steer_back = False
-        controller.alpha = args.alpha
 
-    register_vector_control(pipe.unet, controller)
+    alphas = args.alpha.split(',')
+    for i in range(len(alphas)):
+        alphai = int(alphas[i])
+        print('Step with alpha:', alphai)
 
-    image = run_model(args.model, pipe, args.prompt, args.seed, args.num_denoising_steps)
+        if args.steer_back:
+            controller.steer_back = True
+            controller.beta = args.beta
+        else:
+            controller.steer_back = False
+            controller.alpha = alphai
 
-    image.save(os.path.join(args.save_dir, "{}_{}.png".format(args.image_name, args.alpha)))
+        register_vector_control(pipe.unet, controller)
+
+        image = run_model(args.model, pipe, args.prompt, args.seed, args.num_denoising_steps)
+
+        image.save(os.path.join(args.save_dir, "{}_{}.png".format(args.image_name, alphai)
 
