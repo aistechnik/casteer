@@ -15,11 +15,10 @@ from controller import VectorStore, register_vector_control
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, choices=['sd14', 'sd21', 'sd21-turbo', 'sdxl', 'sdxl-turbo'], default="sd14")
-parser.add_argument('--image_name', type=str, default="a girl with a kitty")
+parser.add_argument('--image_name', type=str, default="girl_with_kitty")
 parser.add_argument('--prompt', type=str, default="a girl with a kitty")
 parser.add_argument('--seed', type=int, default=0)
 parser.add_argument('--steering_vectors', type=str) # path to steering vectors file
-#parser.add_argument('--not_steer', action='store_true')
 parser.add_argument('--steer_only_up', action='store_true')
 parser.add_argument('--num_denoising_steps', type=int, default=50) # 50 for sd14, sd21, 1 for turbo, 30 for sdxl
 parser.add_argument('--steer_back', action='store_true')
@@ -85,7 +84,11 @@ def run_model(model_type, pipe, prompt, seed, num_denoising_steps):
     return image
 
 
+# transform arguments
+image_name = args.image_name.replace(' ','_')
+image_save_dir = args.save_dir+'/'+image_name
 alphas = args.alpha.split(',')
+
 for i in range(len(alphas)):
     alphai = int(alphas[i])
 
@@ -93,8 +96,8 @@ for i in range(len(alphas)):
     print(args.prompt)
     print('Step with alpha:', alphai)
 
-    if not os.path.exists(args.save_dir):
-        os.makedirs(args.save_dir)
+    if not os.path.exists(image_save_dir):
+        os.makedirs(image_save_dir)
 
     with open(args.steering_vectors, 'rb') as handle:
         steering_vectors = pickle.load(handle)
@@ -112,5 +115,5 @@ for i in range(len(alphas)):
     register_vector_control(pipe.unet, controller)
 
     image = run_model(args.model, pipe, args.prompt, args.seed, args.num_denoising_steps)
-    image.save(os.path.join(args.save_dir, "{}_{}.png".format(args.image_name, alphai)))
+    image.save(os.path.join(image_save_dir, "{}.png".format(str(i+1))))
 
